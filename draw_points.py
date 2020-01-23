@@ -8,10 +8,13 @@ WIDTH = int(sys.argv[1]);
 HEIGHT = int(sys.argv[2]);
 NUM_VERTICES = int(sys.argv[3])
 NUM_POINTS = int(sys.argv[4])
+
+# change these colors if you want
 COLOR_WINDOW = "black"
 COLOR_TEXT = "white"
 COLOR_DOTS = "white"
 COLOR_VERTICES = "green"
+# change these parameters if you want, its just aesthetic
 SHAPE = "circle"
 SHAPESIZE = 0.15
 VERTIX_SIZE = 0.5
@@ -48,7 +51,7 @@ def read_coordinates_from_file(filename, num, xlist, ylist):
 	file = open(filename, "r")
 	lines_in_file = file.readlines()
 	for i in range(0, num*2):
-		if (i % 2 == 1):
+		if (i % 2 == 0):
 			xlist.append(lines_in_file[i])
 		else:
 			ylist.append(lines_in_file[i])
