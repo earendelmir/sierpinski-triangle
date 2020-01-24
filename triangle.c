@@ -5,12 +5,10 @@
 #include <time.h>
 /* change these parameters. They won't affect the execution of the program, just its appearance */
 #define NUM_POINTS 1000
-#define WIDTH 1000
-#define HEIGHT 1000
+#define CANVAS_WIDTH 1000
+#define CANVAS_HEIGHT 1000
 /* changing the following parameter gives different outcomes but the simulation should work as well
-*	 bear in mind I only coded a way to handle 3 vertices.
-*	 A higher number would work as well but no pattern would emerge from it
-*/
+*	 bear in mind that with a higher number no pattern will emerge from the simulation. */
 #define NUM_VERTICES 3
 
 
@@ -61,13 +59,13 @@ void random_coordinates(int *x, int *y) {
 	*/
 
 	/* gets a random value between 0 and the total width (almost) */
-	*x = rand() % (WIDTH/2 - 40);
+	*x = rand() % (CANVAS_WIDTH/2 - 40);
 	negative = rand() % 100;	/* every x coordinate has a 50% chance of being negative */
 	if (negative > 50)
 		*x = -*x;
 
 	/* gets a random value between 0 and the total height of the canvas (almost) */
-	*y = rand() % (HEIGHT/2 - 100);
+	*y = rand() % (CANVAS_HEIGHT/2 - 100);
 	negative = rand() % 100;	/* every y coordinate has a 50% chance of being negative */
 	if (negative > 50)
 		*y = -*y;
@@ -76,20 +74,21 @@ void random_coordinates(int *x, int *y) {
 
 /* get the coordinates of the vertices */
 void init_vertices() {
-	if (NUM_VERTICES == 3)
+	/* this initializes the vertices in a regular triangle shape */
+	if (NUM_VERTICES == 3)	/* you could avoid that but it would be messy */
 		triangle();
-	else
-		for (unsigned short int i = 0; i < NUM_VERTICES; i++)
+	else	/* if the number of vertices is different than 3 */
+		for (unsigned short int i = 0; i < NUM_VERTICES; i++) /* give them random coordinates */
 			random_coordinates(&vertices[i].x, &vertices[i].y);
 }
 
 
 /* calculates the vertices' coordinates in order to have a regular triangle */
 void triangle() {
-	int down_x = (rand() % (WIDTH/2 - 10)) + 80;
+	int down_x = (rand() % (CANVAS_WIDTH/2 - 10)) + 80;
 	int left_down_x = -down_x;
 	int right_down_x = down_x;
-	int down_y = -(HEIGHT/2 - 80);
+	int down_y = -(CANVAS_HEIGHT/2 - 80);
 	int up_y = sqrt((down_x*2)*(down_x*2) - down_x*down_x) + down_y;
 	int up_x = 0;
 
@@ -156,7 +155,7 @@ bool same_coordinates(const Point *a, const Point *b) {
 /* calls the python script to draw the simulation */
 void draw() {
 	char python_command[120];
-	sprintf(python_command, "python3 ./draw_points.py %d %d %d %d", WIDTH, HEIGHT, NUM_VERTICES, NUM_POINTS);
+	sprintf(python_command, "python3 ./draw_points.py %d %d %d %d", CANVAS_WIDTH, CANVAS_HEIGHT, NUM_VERTICES, NUM_POINTS);
 	system(python_command);
 }
 
