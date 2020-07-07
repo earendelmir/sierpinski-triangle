@@ -2,26 +2,22 @@ import turtle
 import sys
 
 
-VERTICES_FILE = ".vertices.txt"
-POINTS_FILE = ".points.txt"
-WIDTH = int(sys.argv[1]);
-HEIGHT = int(sys.argv[2]);
-NUM_VERTICES = int(sys.argv[3])
-NUM_POINTS = int(sys.argv[4])
+VERTICES_FILE = ".vertices"
+POINTS_FILE = ".points"
+WIDTH = int(sys.argv[1])
+HEIGHT = int(sys.argv[2])
+NUM_POINTS = int(sys.argv[3])
+NUM_VERTICES = 3
 
-# change these colors if you want
+# change these colors
 COLOR_WINDOW = "black"
 COLOR_TEXT = "white"
-COLOR_DOTS = "white"
+COLOR_POINTS = "white"
 COLOR_VERTICES = "green"
-# change these parameters if you want, its just aesthetic
+# change these parameters
 SHAPE = "circle"
-SHAPESIZE = 0.15
-VERTIX_SIZE = 0.5
-
-X = []
-Y = []
-
+POINT_SIZE = 0.20
+VERTIX_SIZE = 1
 
 
 # WINDOW
@@ -29,16 +25,16 @@ window = turtle.Screen()
 window.bgcolor("black")
 window.setup(WIDTH, HEIGHT)
 
-# POINTS COUNTER
+# ITERATIONS COUNTER TEXT
 point_tx = turtle.Turtle()
 point_tx.penup()
 point_tx.speed(0)
 point_tx.hideturtle()
 point_tx.color(COLOR_TEXT)
 point_tx.setposition(-WIDTH/2 + 16, HEIGHT/2 - 58)
-point_tx.write("points 0", align='left', font=('Arial', 12, 'italic'))
+point_tx.write("points: 0", align='left', font=('Arial', 12, 'italic'))
 
-# DOT
+# DOT TURTLE
 d = turtle.Turtle()
 d.penup()
 d.shape(SHAPE)
@@ -56,31 +52,34 @@ def read_coordinates_from_file(filename, num, xlist, ylist):
 		else:
 			ylist.append(lines_in_file[i])
 	file.close()
+	
+	
 
-
-def draw_points():
-	d.color(COLOR_DOTS)
-	d.shapesize(SHAPESIZE)
-	read_coordinates_from_file(POINTS_FILE, NUM_POINTS, X, Y)
-	for i in range(NUM_POINTS):
-		d.goto(int(X[i]), int(Y[i]))
-		d.stamp()
-		point_txt = "iterations {}".format(i+1)
+def update_counter(value):
+		point_txt = "points: {}".format(value)
 		point_tx.undo()
 		point_tx.write(point_txt, align='left', font=('Arial', 12, 'italic'))
 
 
-def draw_vertices():
-	d.color(COLOR_VERTICES)
-	d.shapesize(VERTIX_SIZE)
-	read_coordinates_from_file(VERTICES_FILE, NUM_VERTICES, X, Y)
-	for i in range(NUM_VERTICES):
-		print("printing vertix")
+
+def draw(source_file, total_num, color, size, counter):
+	X = []
+	Y = []
+	read_coordinates_from_file(source_file, total_num, X, Y)
+	d.color(color)
+	d.shapesize(size)
+	for i in range(total_num):
 		d.goto(int(X[i]), int(Y[i]))
 		d.stamp()
+		if (counter):
+			update_counter(i+1)
+
 
 
 if __name__ == '__main__':
-	draw_vertices()
-	draw_points()
+	print("drawing vertices")
+	draw(VERTICES_FILE, NUM_VERTICES, COLOR_VERTICES, VERTIX_SIZE, False)
+	print("drawing points")
+	draw(POINTS_FILE, NUM_POINTS, COLOR_POINTS, POINT_SIZE, True)
+	print("done")
 	window.mainloop()
