@@ -22,7 +22,7 @@ VERTIX_SIZE = 1
 
 # WINDOW
 window = turtle.Screen()
-window.bgcolor("black")
+window.bgcolor(COLOR_WINDOW)
 window.setup(WIDTH, HEIGHT)
 
 # ITERATIONS COUNTER TEXT
