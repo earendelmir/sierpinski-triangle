@@ -6,8 +6,8 @@ VERTICES_FILE = ".vertices"
 POINTS_FILE = ".points"
 WIDTH = int(sys.argv[1])
 HEIGHT = int(sys.argv[2])
-NUM_POINTS = int(sys.argv[3])
-NUM_VERTICES = 3
+NUM_VERTICES = int(sys.argv[3])
+NUM_POINTS = int(sys.argv[4])
 
 # change these colors
 COLOR_WINDOW = "black"
@@ -16,7 +16,7 @@ COLOR_POINTS = "white"
 COLOR_VERTICES = "green"
 # change these parameters
 SHAPE = "circle"
-POINT_SIZE = 0.20
+POINT_SIZE = 0.25
 VERTIX_SIZE = 1
 
 
@@ -26,60 +26,67 @@ window.bgcolor(COLOR_WINDOW)
 window.setup(WIDTH, HEIGHT)
 
 # ITERATIONS COUNTER TEXT
-point_tx = turtle.Turtle()
-point_tx.penup()
-point_tx.speed(0)
-point_tx.hideturtle()
-point_tx.color(COLOR_TEXT)
-point_tx.setposition(-WIDTH/2 + 16, HEIGHT/2 - 58)
-point_tx.write("points: 0", align='left', font=('Arial', 12, 'italic'))
+counterTxt = turtle.Turtle()
+counterTxt.penup()
+counterTxt.speed(0)
+counterTxt.hideturtle()
+counterTxt.color(COLOR_TEXT)
+counterTxt.setposition(-WIDTH/2 + 16, HEIGHT/2 - 58)
+counterTxt.write("points: 0", align='left')
 
 # DOT TURTLE
-d = turtle.Turtle()
-d.penup()
-d.shape(SHAPE)
-d.hideturtle()
-d.speed(0)
+dot = turtle.Turtle()
+dot.penup()
+dot.shape(SHAPE)
+dot.hideturtle()
+dot.speed(0)
 
 
 
-def read_coordinates_from_file(filename, num, xlist, ylist):
-	file = open(filename, "r")
-	lines_in_file = file.readlines()
-	for i in range(0, num*2):
-		if (i % 2 == 0):
-			xlist.append(lines_in_file[i])
-		else:
-			ylist.append(lines_in_file[i])
-	file.close()
-	
-	
-
-def update_counter(value):
-		point_txt = "points: {}".format(value)
-		point_tx.undo()
-		point_tx.write(point_txt, align='left', font=('Arial', 12, 'italic'))
+def readCoordinates(filename, num, xlist, ylist):
+  coordsFile = open(filename, "r")
+  lines = coordsFile.readlines()
+  for i in range(0, num*2):
+    # X coordinates are stored in the even lines of the file
+    if (i % 2 == 0):
+      xlist.append(int(lines[i]))
+    # Y coordinates are stored in the odd lines of the file
+    else:
+      ylist.append(int(lines[i]))
+  coordsFile.close()
 
 
 
-def draw(source_file, total_num, color, size, counter):
-	X = []
-	Y = []
-	read_coordinates_from_file(source_file, total_num, X, Y)
-	d.color(color)
-	d.shapesize(size)
-	for i in range(total_num):
-		d.goto(int(X[i]), int(Y[i]))
-		d.stamp()
-		if (counter):
-			update_counter(i+1)
+def updateCounter(value):
+    text = "points: {}".format(value)
+    counterTxt.undo()
+    counterTxt.write(text, align='left', font=('Arial', 12, 'italic'))
+
+
+
+def draw(sourceFile, total, color, size, showCounter):
+  X = []
+  Y = []
+  readCoordinates(sourceFile, total, X, Y)
+  dot.color(color)
+  dot.shapesize(size)
+  for i in range(total):
+    dot.goto(X[i], Y[i])
+    dot.stamp()
+    if (showCounter):
+      updateCounter(i+1)
+  X.clear()
+  Y.clear()
 
 
 
 if __name__ == '__main__':
-	print("drawing vertices")
-	draw(VERTICES_FILE, NUM_VERTICES, COLOR_VERTICES, VERTIX_SIZE, False)
-	print("drawing points")
-	draw(POINTS_FILE, NUM_POINTS, COLOR_POINTS, POINT_SIZE, True)
-	print("done")
-	window.mainloop()
+  print("Drawing the vertices...")
+  draw(VERTICES_FILE, NUM_VERTICES, COLOR_VERTICES, VERTIX_SIZE, False)
+  print("Drawing the points...")
+  draw(POINTS_FILE, NUM_POINTS, COLOR_POINTS, POINT_SIZE, True)
+
+  # waits for the user to press a key before closing the window
+  print("Done.\nPress ENTER to close the window...", end="")
+  closingInput = input()
+  exit(0)
