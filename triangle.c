@@ -5,7 +5,7 @@
 #include <time.h>
 #define NUM_VERTICES 3
 // change these parameters. They won't affect the execution of the program, just its appearance
-#define NUM_POINTS 1200
+#define NUM_POINTS 500
 #define CANVAS_WIDTH 1000
 #define CANVAS_HEIGHT 1000
 
@@ -19,26 +19,26 @@ void randomCoordinates(struct Point *point);
 void nextPoint(const struct Point *vertices, struct Point *points, unsigned int num_points, const struct Point *last_point);
 struct Point halfWay(const struct Point *a, const struct Point *b);
 bool sameCoordinates(const struct Point *a, const struct Point *b);
-void write_points_to_file(const char *file_path, const struct Point *points, unsigned int num_points);
+void writePointsToFile(const char *file_path, const struct Point *points, unsigned int num_points);
 FILE *openFile(const char *path, const char *mode);
-void draw(void);
+void draw();
 
 
 
-int main(void) {
+int main() {
   struct Point vertices[NUM_VERTICES];
   struct Point points[NUM_POINTS];
-  unsigned int num_points = 0;
+  unsigned int numPoints = 0;
   srand(time(NULL));
 
   initVertices(vertices);
   printf("Created %hu vertices.\n", NUM_VERTICES);
 
-  nextPoint(vertices, points, num_points, firstPoint(vertices));
+  nextPoint(vertices, points, numPoints, firstPoint(vertices));
   printf("Created %u points.\n", NUM_POINTS);
 
-  write_points_to_file(".vertices", vertices, NUM_VERTICES);
-  write_points_to_file(".points", points, NUM_POINTS);
+  writePointsToFile(".vertices", vertices, NUM_VERTICES);
+  writePointsToFile(".points", points, NUM_POINTS);
   draw();
   return (EXIT_SUCCESS);
 }
@@ -108,7 +108,7 @@ void randomCoordinates(struct Point *point) {
 
 
 // gets the next point in the series. (recursive function)
-void nextPoint(const struct Point *vertices, struct Point *points, unsigned int num_points, const struct Point *last_point) {
+void nextPoint(const struct Point *vertices, struct Point *points, unsigned int numPoints, const struct Point *lastPoint) {
   static int iterations = -3;
   if (iterations > NUM_POINTS)
     return;
@@ -116,16 +116,16 @@ void nextPoint(const struct Point *vertices, struct Point *points, unsigned int 
   // chooses a random vertix to consider
   unsigned short int i = rand() % NUM_VERTICES;
   // the new point will be positioned halfway between the chosen vertix and the last point created
-  struct Point point = halfWay(&vertices[i], last_point);
+  struct Point point = halfWay(&vertices[i], lastPoint);
 
   // The iterations counter starts at -3 because I don't want to actually draw the first 3 points.
   // I do this because the first one might occupy a position in the canvas that would - by following the algorithm - be empty.
   // I wait for the points to be aligned before printing any of them.
   if (iterations > 0)
-    points[num_points++] = point;
+    points[numPoints++] = point;
 
   iterations++;
-  nextPoint(vertices, points, num_points, &point);
+  nextPoint(vertices, points, numPoints, &point);
 }
 
 
@@ -146,9 +146,9 @@ bool sameCoordinates(const struct Point *a, const struct Point *b) {
 
 
 // given the file path, the points array and the dimension of the latter, it stores all the points in the file
-void write_points_to_file(const char *file_path, const struct Point *points, unsigned int num_points) {
-  FILE *file = openFile(file_path, "w");
-  for (unsigned short int i = 0; i < num_points; i++)
+void writePointsToFile(const char *filePath, const struct Point *points, unsigned int numPoints) {
+  FILE *file = openFile(filePath, "w");
+  for (unsigned short int i = 0; i < numPoints; i++)
     fprintf(file, "%d\n%d\n", points[i].x, points[i].y);
   fclose(file);
 }
@@ -168,7 +168,7 @@ FILE *openFile(const char *path, const char *mode) {
 
 
 // calls the python script to draw the simulation
-void draw(void) {
+void draw() {
   char python_command[60];
   sprintf(python_command, "python3 ./draw_points.py %d %d %d %d", CANVAS_WIDTH, CANVAS_HEIGHT, NUM_VERTICES, NUM_POINTS);
   system(python_command);

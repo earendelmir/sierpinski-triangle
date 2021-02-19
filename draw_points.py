@@ -12,12 +12,13 @@ NUM_POINTS = int(sys.argv[4])
 # change these colors
 COLOR_WINDOW = "black"
 COLOR_TEXT = "white"
-COLOR_POINTS = "white"
-COLOR_VERTICES = "green"
 # change these parameters
-SHAPE = "circle"
-POINT_SIZE = 0.25
+VERTIX_COLOR = "green"
+VERTIX_SHAPE = "square"
 VERTIX_SIZE = 1
+POINT_COLOR = "white"
+POINT_SHAPE = "circle"
+POINT_SIZE = 0.25
 
 
 # WINDOW
@@ -37,23 +38,22 @@ counterTxt.write("points: 0", align='left')
 # DOT TURTLE
 dot = turtle.Turtle()
 dot.penup()
-dot.shape(SHAPE)
 dot.hideturtle()
 dot.speed(0)
 
 
 
-def readCoordinates(filename, num, xlist, ylist):
-  coordsFile = open(filename, "r")
-  lines = coordsFile.readlines()
-  for i in range(0, num*2):
-    # X coordinates are stored in the even lines of the file
-    if (i % 2 == 0):
-      xlist.append(int(lines[i]))
-    # Y coordinates are stored in the odd lines of the file
-    else:
-      ylist.append(int(lines[i]))
-  coordsFile.close()
+def readCoordinates(filename, num, xList, yList):
+    coordsFile = open(filename, "r")
+    lines = coordsFile.readlines()
+    for i in range(0, num*2):
+        # X coordinates are stored in the even lines of the file
+        if (i % 2 == 0):
+            xList.append(int(lines[i]))
+        # Y coordinates are stored in the odd lines of the file
+        else:
+            yList.append(int(lines[i]))
+    coordsFile.close()
 
 
 
@@ -64,29 +64,30 @@ def updateCounter(value):
 
 
 
-def draw(sourceFile, total, color, size, showCounter):
-  X = []
-  Y = []
-  readCoordinates(sourceFile, total, X, Y)
-  dot.color(color)
-  dot.shapesize(size)
-  for i in range(total):
-    dot.goto(X[i], Y[i])
-    dot.stamp()
-    if (showCounter):
-      updateCounter(i+1)
-  X.clear()
-  Y.clear()
+def draw(sourceFile, total, color, shape, size, showCounter):
+    X = []
+    Y = []
+    readCoordinates(sourceFile, total, X, Y)
+    dot.color(color)
+    dot.shape(shape)
+    dot.shapesize(size)
+    for i in range(total):
+        dot.goto(X[i], Y[i])
+        dot.stamp()
+        if (showCounter):
+            updateCounter(i+1)
+    X.clear()
+    Y.clear()
 
 
 
 if __name__ == '__main__':
-  print("Drawing the vertices...")
-  draw(VERTICES_FILE, NUM_VERTICES, COLOR_VERTICES, VERTIX_SIZE, False)
-  print("Drawing the points...")
-  draw(POINTS_FILE, NUM_POINTS, COLOR_POINTS, POINT_SIZE, True)
+    print("Drawing the vertices...")
+    draw(VERTICES_FILE, NUM_VERTICES, VERTIX_COLOR, VERTIX_SHAPE, VERTIX_SIZE, False)
+    print("Drawing the points...")
+    draw(POINTS_FILE, NUM_POINTS, POINT_COLOR, POINT_SHAPE, POINT_SIZE, True)
 
-  # waits for the user to press a key before closing the window
-  print("Done.\nPress ENTER to close the window...", end="")
-  closingInput = input()
-  exit(0)
+    # waits for the user to press a key before closing the window
+    print("Done.\nPress ENTER to close the window...", end="")
+    closingInput = input()
+    exit(0)
