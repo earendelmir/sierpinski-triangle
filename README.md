@@ -12,7 +12,7 @@ On Ubuntu based systems run:
 Then *make* the **C** file:
 <pre><code>make triangle</code></pre>
 And finally run it:
-<pre><code>./executable</code></pre>
+<pre><code>./triangle.out</code></pre>
 I marked what parameters you can change inside the **C** and **Python** files.<br>
 It will only affect the final look of the simulation.
 
